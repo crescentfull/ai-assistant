@@ -133,7 +133,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Django Allauth 설정
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = False #True
 ACCOUNT_AUTHENTICATION_METHOD = 'ohhee'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
