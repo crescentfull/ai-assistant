@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-    'allauth',
-    'allauth.account',
     'rest_auth.registration',
+    "allauth",
+    'allauth.account',
+    'allauth.socialaccount',
     'schedule',
 ]
 
@@ -67,6 +68,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'allauth.account.context_processors.account',
+                'allauth.socialaccount.context_processors.socialaccount',
             ],
         },
     },
@@ -135,7 +138,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Django Allauth 설정
 ACCOUNT_EMAIL_REQUIRED = False #True
 ACCOUNT_AUTHENTICATION_METHOD = 'ohhee'
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none'#'mandatory'
 
 # Django REST Framework 설정
 REST_FRAMEWORK = {
