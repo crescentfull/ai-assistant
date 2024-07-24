@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'schedule',
 ]
 
+SITE_ID = 1 # 다중사이트 넘버링
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
