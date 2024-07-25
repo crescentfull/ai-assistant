@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm
+from django.http import HttpResponse
 
 def signup(request):
     if request.method == 'POST':
@@ -16,3 +17,6 @@ def signup(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
+def home(request):
+    return HttpResponse("HI!")
