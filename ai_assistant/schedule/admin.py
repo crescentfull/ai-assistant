@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser, Schedule, Tag
 
 class CustomUserAdmin(UserAdmin):
     # 사용자 목록에 표시할 필드
@@ -41,3 +41,5 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('username',)
     
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Schedule)
+admin.site.register(Tag)

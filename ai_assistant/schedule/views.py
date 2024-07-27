@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm
+from .models import Schedule
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 def signup(request):
     if request.method == 'POST':
@@ -20,3 +22,20 @@ def signup(request):
 
 def home(request):
     return HttpResponse("HI!")
+
+@login_required
+def create_schedule(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        start_time = request.POST.get('start_time')
+        end_time = request.POST.get('end_time')
+        schedule = Schedule.objects.create(
+            title       =   title,
+            description =   description,
+            start_time  =   start_time,
+            end_time    =   end_time,
+            created_by  = request.user
+        )
+        return redirect('home')
+    return render(request, 'create_schedule.html')

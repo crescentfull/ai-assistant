@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Schedule</title>
+</head>
+<body>
+    <h1>Create Schedule</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title"><br>
+
+        <label for="description">Description:</label>
+        <textarea name="description" id="description"></textarea>
+
+        <label for="start_time">Start Time:</label>
+        <input type="datetime-local" name="start_time" id="start_time">
+
+        <label for="end_time">End Time</label>
+        <input type="datetime-local" name="end_time" id="end_time">
+
+        <button type="submit">CREATE</button>
+    </form>
+</body>
+</html>
