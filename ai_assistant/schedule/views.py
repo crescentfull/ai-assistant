@@ -5,6 +5,13 @@ from .models import Schedule
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
+
+def home(request):
+    return render(request, 'home.html')
+
+def profile(request):
+    return render(request, 'profile.html')
+
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -19,9 +26,6 @@ def signup(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
-
-def home(request):
-    return HttpResponse("HI!")
 
 @login_required
 def create_schedule(request):
