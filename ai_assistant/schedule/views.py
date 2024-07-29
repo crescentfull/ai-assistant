@@ -18,14 +18,13 @@ def signup(request):
         if form.is_valid():
             try:
                 user = form.save()
-                user.save()
                 login(request, user)
                 return redirect('home')
             except Exception as e:
                 form.add_error(None, f"에러발생: {e}")
     else:
         form = CustomUserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'account/signup.html', {'form': form})
 
 @login_required
 def create_schedule(request):
