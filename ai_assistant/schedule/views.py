@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomLoginForm
 from .models import Schedule
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from allauth.account.views import LoginView
 
 
 def home(request):
@@ -25,6 +25,9 @@ def signup(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'account/signup.html', {'form': form})
+
+class CustomLoginView(LoginView):
+    form_class = CustomLoginForm
 
 @login_required
 def create_schedule(request):

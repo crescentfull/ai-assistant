@@ -123,7 +123,7 @@ AUTH_USER_MODEL = 'schedule.CustomUser'
 
 # Authentication settings
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Internationalization
 LANGUAGE_CODE = 'ko-kr'
@@ -145,7 +145,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Django Allauth 설정
 ACCOUNT_EMAIL_REQUIRED = False #True
-ACCOUNT_AUTHENTICATION_METHOD = 'ohhee'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'none'#'mandatory'
 
 # Django REST Framework 설정
