@@ -22,6 +22,7 @@ class Schedule(models.Model):
     end_time = models.DateTimeField()
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True)
+    event_link = models.URLField(blank=True, null=True) # Google Calendar 이벤트 링크
     
     def __str__(self):
         return self.title

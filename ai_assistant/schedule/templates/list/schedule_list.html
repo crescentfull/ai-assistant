@@ -12,6 +12,9 @@
         <li>
             <strong>{{ schedule.title }}</strong> - {{ schedule.start_time }} to {{ schedule.end_time }}
             <p>{{ schedule.description }}</p>
+            {% if schedule.event_link %}
+                <p><a href="{{ schedule.event_link }}" target="_blank">View on Google Calendar</a></p>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm, CustomLoginForm, ScheduleForm
 from .models import Schedule
+from .google_calendar import create_event
 from django.contrib.auth.decorators import login_required
 from allauth.account.views import LoginView
 
@@ -38,6 +39,8 @@ def create_schedule(request):
             schedule.created_by = request.user
             schedule.save()
             form.save_m2m()
+            # Google Calendar에 이벤트 생성
+            event_link = create_event(schedule.title, schedule.description, schedule.start_time, schedule.end_time)
             return redirect('home')
     else:
         form = ScheduleForm()
