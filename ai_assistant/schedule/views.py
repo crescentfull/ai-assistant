@@ -42,3 +42,8 @@ def create_schedule(request):
     else:
         form = ScheduleForm()
     return render(request, 'create_schedule.html', {'form': form})
+
+@login_required
+def schedule_list(request):
+    schedules = Schedule.objects.filter(created_by=request.user)
+    return render(request, 'schedule_list.html', {'schedules': schedules})

@@ -11,5 +11,4 @@ urlpatterns = [
     path('rest-auth/registration', include('rest_auth.registration.urls')),
     path('accounts/', include('allauth.urls')), # Django Allauth URL
     path('accounts/login/', CustomLoginView.as_view(), name='account_login'),    
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

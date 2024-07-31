@@ -123,7 +123,7 @@ AUTH_USER_MODEL = 'schedule.CustomUser'
 
 # Authentication settings
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Internationalization
 LANGUAGE_CODE = 'ko-kr'
