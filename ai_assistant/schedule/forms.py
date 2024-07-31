@@ -17,3 +17,9 @@ class CustomLoginForm(LoginForm):
         self.fields['login'].widget.attrs.update({'class': 'form-control'})
         self.fields['password'].widget.attrs.update({'class': 'form-control'})
         self.fields['remember'].widget.attrs.update({'class': 'form-check-input'})
+        
+class ScheduleForm(forms.ModelForm):
+    class Meta:
+        model = Schedule
+        fields = ['title', 'description', 'start_time', 'end_time', 'tags']
+        

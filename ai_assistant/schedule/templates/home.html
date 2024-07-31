@@ -6,11 +6,17 @@
     <title>Home</title>
 </head>
 <body>
-    <h1>HOME</h1>
+    <h1>Home</h1>
     {% if user.is_authenticated %}
         <p>Welcome, {{ user.username }}!</p>
         <p><a href="{% url 'profile' %}">Profile</a></p>
         <p><a href="{% url 'logout' %}">Logout</a></p>
+        <h2>Create Schedule</h2>
+        <form method="post" action="{% url 'create_schedule' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Schedule</button>
+        </form>
     {% else %}
         <p><a href="{% url 'account_login' %}">Login</a></p>
         <p><a href="{% url 'account_signup' %}">Sign Up</a></p>
