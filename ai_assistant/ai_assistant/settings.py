@@ -158,3 +158,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# google 0Auth2 credentials
+GOOGLE_CLIENT_SECRETS_FILE = os.path.join(BASE_DIR, 'path/to/credentials.json')
+GOOGLE_REDIRECT_URI = 'http://localhost:8000/oauth2callback'

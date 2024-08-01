@@ -1,77 +1,79 @@
 import os
-import datetime
-from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
+from django.conf import settings
 
-# Google Calendar API의 범위 설정
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-def get_calendar_service():
-    """
-    Google Calendar 서비스 객체 생성
-    사용자 인증 처리, 토큰을 갱신
-    """
-    creds = None
-    # token.json 파일은 사용자의 액세스 및 리프레시 토큰을 저장합니다.
-    # 인증 흐름이 처음 완료될 때 자동으로 생성됩니다.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # 유효한 자격 증명이 없는 경우 사용자를 로그인시킵니다.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            # 토큰이 만료되었지만 리프레시 토큰이 있는 경우 토큰을 갱신합니다.
-            creds.refresh(Request())
-        else:
-            # 리프레시 토큰이 없거나 유효하지 않은 경우 사용자 로그인을 시작합니다.
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # 다음 실행을 위해 자격 증명을 저장합니다.
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-    # Google Calendar API 서비스 객체를 빌드합니다.
-    service = build('calendar', 'v3', credentials=creds)
-    return service
-
-def create_event(summary, description, start_time, end_time):
-    """
-    Google Calendar에 새로운 이벤트를 생성합니다.
-
-    Args:
-        summary (str): 이벤트 제목
-        description (str): 이벤트 설명
-        start_time (datetime): 이벤트 시작 시간 (datetime 객체)
-        end_time (datetime): 이벤트 종료 시간 (datetime 객체)
-
-    Returns:
-        str: 생성된 이벤트의 링크 (URL)
-    """
-    # Google Calendar 서비스 객체를 가져옵니다.
-    service = get_calendar_service()
-    
-    # 이벤트 데이터를 정의합니다.
-    event = {
-        'summary': summary,  # 이벤트 제목
-        'description': description,  # 이벤트 설명
-        'start': {
-            'dateTime': start_time.isoformat(),  # 이벤트 시작 시간 (ISO 형식)
-            'timeZone': 'UTC',  # 시간대 설정
-        },
-        'end': {
-            'dateTime': end_time.isoformat(),  # 이벤트 종료 시간 (ISO 형식)
-            'timeZone': 'UTC',  # 시간대 설정
-        },
-        'reminders': {
-            'useDefault': False,  # 기본 리마인더 설정을 사용하지 않음
-            'overrides': [
-                {'method': 'email', 'minutes': 24 * 60},  # 이메일 리마인더 (24시간 전)
-                {'method': 'popup', 'minutes': 10},  # 팝업 리마인더 (10분 전)
-            ],
-        },
+def credentials_to_dict(credentials):
+    return {
+        'token': credentials.token,
+        'refresh_token': credentials.refresh_token,
+        'token_uri': credentials.token_uri,
+        'client_id': credentials.client_id,
+        'client_secret': credentials.client_secret,
+        'scopes': credentials.scopes
     }
-    
-    # 이벤트를 Google Calendar에 삽입합니다.
-    event = service.events().insert(calendarId='primary', body=event).execute()
-    print(f"Event created: {event.get('htmlLink')}")  # 생성된 이벤트 링크를 출력합니다.
-    return event.get('htmlLink')  # 생성된 이벤트의 링크를 반환합니다.
+
+def get_credentials_from_session(session):
+    if 'credentials' in session:
+        return Credentials(**session['credentials'])
+    return None
+
+def save_credentials_to_session(session, credentials):
+    session['credentials'] = credentials_to_dict(credentials)
+
+def initiate_google_calendar_auth(request):
+    flow = Flow.from_client_secrets_file(
+        settings.GOOGLE_CLIENT_SECRETS_FILE,
+        scopes=SCOPES,
+        redirect_uri=settings.GOOGLE_REDIRECT_URI
+    )
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
+    request.session['state'] = state
+    return authorization_url
+
+def handle_google_calendar_callback(request):
+    state = request.session.get('state')
+    flow = Flow.from_client_secrets_file(
+        settings.GOOGLE_CLIENT_SECRETS_FILE,
+        scopes=SCOPES,
+        state=state,
+        redirect_uri=settings.GOOGLE_REDIRECT_URI
+    )
+    authorization_response = request.build_absolute_uri()
+    flow.fetch_token(authorization_response=authorization_response)
+
+    credentials = flow.credentials
+    save_credentials_to_session(request.session, credentials)
+
+def create_google_calendar_event(request, title, description, start_time, end_time):
+    credentials = get_credentials_from_session(request.session)
+    if not credentials:
+        return None, "Credentials not found"
+
+    try:
+        service = build('calendar', 'v3', credentials=credentials)
+
+        event = {
+            'summary': title,
+            'description': description,
+            'start': {
+                'dateTime': start_time,
+                'timeZone': 'Asia/Seoul',
+            },
+            'end': {
+                'dateTime': end_time,
+                'timeZone': 'Asia/Seoul',
+            },
+        }
+
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        return event.get('htmlLink'), None
+
+    except Exception as e:
+        return None, str(e)
