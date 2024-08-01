@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_auth',
     'rest_auth.registration',
-    'schedule'
+    'schedule',
+    'sslserver',
 ]
 
 SITE_ID = 1 # 다중사이트 넘버링
@@ -160,5 +161,6 @@ REST_FRAMEWORK = {
 }
 
 # google 0Auth2 credentials
-GOOGLE_CLIENT_SECRETS_FILE = os.path.join(BASE_DIR, 'path/to/credentials.json')
+GOOGLE_CLIENT_SECRETS_FILE = os.path.join(BASE_DIR, 'credentials.json')
 GOOGLE_REDIRECT_URI = 'http://localhost:8000/oauth2callback'
+GOOGLE_TOKEN_FILE = 'token.json'

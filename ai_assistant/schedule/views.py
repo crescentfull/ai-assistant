@@ -66,7 +66,6 @@ def create_schedule(request):
                     schedule.save()
             except Exception as e:
                 print(f"An error occurred: {e}")
-
             return redirect('schedule_list')
     else:
         form = ScheduleForm()
