@@ -1,8 +1,10 @@
 
 import logging
+import datetime
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
+from google.oauth2 import service_account
 from django.conf import settings
 
 # 설정 로그
@@ -10,6 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
+service = build('calendar', 'v3', credentials=settings.GOOGLE_CLIENT_SECRETS_FILE)
 
 def credentials_to_dict(credentials):
     return {
@@ -119,3 +122,23 @@ def create_google_calendar_event(request, title, description, start_time, end_ti
     except Exception as e:
         logger.error('An error occurred: %s', e)
         return None, str(e)
+
+# CRUD
+def create_event(event):
+    event = service.events().insert(calendarId='primary', body=event).execute()
+    return event
+
+def get_events():
+    now = datetime.datetime.utcnow().isoformat() + 'Z'
+    events_result = service.events().list(calendarId='primary', timeMin=now,
+                                          maxResults=10, singleEvents=True,
+                                          orderBy='startTime').execute()
+    events = events_result.get('items', [])
+    return events
+
+def update_event(event_id, updated_event):
+    event = service.events().update(calendarId='primary', eventId=event_id, body=updated_event).execute()
+    return event
+
+def delete_event(event_id):
+    service.events().delete(calendarId='primary', eventId=event_id).execute()
