@@ -23,3 +23,8 @@ class ScheduleForm(forms.ModelForm):
         model = Schedule
         fields = ['title', 'description', 'start_time', 'end_time', 'tags']
         
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'first_name', 'last_name']
+        

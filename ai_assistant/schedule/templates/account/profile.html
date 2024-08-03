@@ -9,6 +9,13 @@
     <h1>PROFILE</h1>
     <p>Username : {{ user.username }}</p>
     <p>Emaile : {{ user.email }}</p>
+
+    <h2>Edit Profile</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save changes</button>
+    </form>
     <p><a href="{% url 'home' %}">Home</a></p>
 </body>
 </html>
