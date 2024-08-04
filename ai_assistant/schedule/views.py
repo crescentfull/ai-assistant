@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm, CustomLoginForm, ScheduleForm, ProfileForm
 from .models import Schedule
-from .google_calendar import initiate_google_calendar_auth, handle_google_calendar_callback, create_google_calendar_event
+from .google_calendar import *
 from django.contrib.auth.decorators import login_required
 from allauth.account.views import LoginView
 import logging
@@ -102,6 +102,40 @@ def create_schedule(request):
     else:
         form = ScheduleForm()
     return render(request, 'list/create_schedule.html', {'form': form})
+
+def update_schedule(request, event_id):
+    if request.method == 'POST':
+        updated_event = {
+            'summary': request.POST['summary'],
+            'location': request.POST['location'],
+            'description': request.POST['description'],
+            'start': {
+                'dateTime': request.POST['start'],
+                'timeZone': 'Asia/Seoul',
+            },
+            'end': {
+                'dateTime': request.POST['end'],
+                'timeZone': 'Asia/Seoul',
+            },
+        }
+        logger.debug(f'Updating event {event_id} with data: {updated_event}')
+        try:
+            update_event(event_id, updated_event)
+            logger.debug('Event updated successfully')
+        except Exception as e:
+            logger.error(f'Error updating event {event_id}: {e}')
+        return redirect('schedule_list')
+    return render(request, 'list/update_schedule.html')
+
+
+def delete_schedule(request, event_id):
+    logger.debug(f'Deleting event {event_id}')
+    try:
+        delete_event(event_id)
+        logger.debug('Event deleted successfully')
+    except Exception as e:
+        logger.error(f'Error deleting event {event_id}: {e}')
+    return redirect('schedule_list')
 
 @login_required
 def schedule_list(request):
