@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Event, LearningStatus, AcademicSchedule
 
-# Register your models here.
+admin.site.register(Event)
+admin.site.register(LearningStatus)
+admin.site.register(AcademicSchedule)
