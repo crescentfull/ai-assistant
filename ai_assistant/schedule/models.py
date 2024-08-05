@@ -1,7 +1,8 @@
-from django.db import models
-
+import logging
 from django.db import models
 from django.contrib.auth.models import User
+
+logger = logging.getLogger(__name__)
 
 class Event(models.Model):
     """
@@ -16,6 +17,10 @@ class Event(models.Model):
     end_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    def save(self, *args, **kwargs):
+        logger.debug(f"Event {self.summary} saved/updated for user {self.user}")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.summary
