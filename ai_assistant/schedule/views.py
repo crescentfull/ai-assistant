@@ -6,6 +6,7 @@ from django.contrib import messages
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.views import OAuth2LoginView, OAuth2CallbackView
 from allauth.socialaccount.helpers import render_authentication_error
+from django.views import View
 
 from .gpt import ask_gpt
 import logging
