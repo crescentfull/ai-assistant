@@ -2,10 +2,46 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.views import OAuth2LoginView, OAuth2CallbackView
+from allauth.socialaccount.helpers import render_authentication_error
+
 from .gpt import ask_gpt
 import logging
 
 logger = logging.getLogger(__name__)
+
+class CustomOAuth2LoginView(OAuth2LoginView):
+    adapter_class = GoogleOAuth2Adapter
+
+    def get_adapter(self, request):
+        return self.adapter_class(request)
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.adapter = self.get_adapter(request)  # adapter 인스턴스를 설정
+            return super().dispatch(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"OAuth2LoginView error: {e}")
+            messages.error(request, "An error occurred during the login process. Please try again.")
+            return redirect('account_login')
+
+class CustomOAuth2CallbackView(OAuth2CallbackView):
+    adapter_class = GoogleOAuth2Adapter
+
+    def get_adapter(self, request):
+        return self.adapter_class(request)
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.adapter = self.get_adapter(request)  # adapter 인스턴스를 설정
+            return super().dispatch(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"OAuth2CallbackView error: {e}")
+            messages.error(request, "An error occurred during authentication. Please try again.")
+            return render_authentication_error(request)
+
 
 def chat(request):
     """
