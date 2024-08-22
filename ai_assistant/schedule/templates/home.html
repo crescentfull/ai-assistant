@@ -1,4 +1,5 @@
-{% extends 'schedule/base.html' %}
+{% extends 'base.html' %}
+{% load socialaccount %} <!-- django-allauth 템플릿 태그 로드 -->
 
 {% block content %}
     <div class="jumbotron mt-5">
@@ -10,7 +11,7 @@
             <a class="btn btn-primary btn-lg" href="#" role="button">Google 캘린더 관리</a>
         {% else %}
             <p>계정이 없으신가요? 지금 Google로 로그인하세요.</p>
-            <a class="btn btn-primary btn-lg" href="{% provider_login_url 'google' %}" role="button">Google로 로그인</a>
+            <a class="btn btn-primary btn-lg" href="{% provider_login_url 'google' method='oauth2' %}" role="button">Google로 로그인</a>
         {% endif %}
     </div>
 {% endblock %}
