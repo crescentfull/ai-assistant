@@ -152,7 +152,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         },
-        'CLIENT_ID': 'your-google-client-id',
-        'SECRET': 'your-google-client-secret',
+        'CLIENT_ID': os.getenv('CLIENT_ID'),
+        'SECRET': os.getenv('SECRET'),
     }
 }
